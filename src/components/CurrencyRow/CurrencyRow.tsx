@@ -1,16 +1,16 @@
-import { ChangeEvent, FC } from 'react';
-import { useAppSelector } from 'hooks/redux-hooks.ts';
+import {ChangeEvent, FC} from 'react';
+import {useAppSelector} from 'hooks/redux-hooks.ts';
 
 interface ICurrencyRow {
-  selectedCurrency: string;
-  onChangeCurrency: (e: ChangeEvent<HTMLSelectElement>) => void;
-  onAmountChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  amount: number;
+    selectedCurrency: string;
+    onChangeCurrency: (e: ChangeEvent<HTMLSelectElement>) => void;
+    onAmountChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    amount: number;
 }
 
-export const CurrencyRow: FC<ICurrencyRow> = ({ selectedCurrency, onChangeCurrency, amount, onAmountChange }) => {
+export const CurrencyRow: FC<ICurrencyRow> = ({selectedCurrency, onChangeCurrency, amount, onAmountChange}) => {
 
-  const { currencies } = useAppSelector(state => state.currencyRates);
+  const {currencies} = useAppSelector(state => state.currencyRates);
 
   return (
     <div>

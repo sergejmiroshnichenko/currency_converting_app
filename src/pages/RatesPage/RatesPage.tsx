@@ -1,6 +1,6 @@
-import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
-import { useEffect, useState } from 'react';
-import { fetchAllCurrencyRates } from 'store/slices/CurrenciesSlice.ts';
+import {useAppDispatch, useAppSelector} from 'hooks/redux-hooks.ts';
+import {useEffect, useState} from 'react';
+import {changeFromCurrency, fetchAllCurrencyRates} from 'store/slices/CurrenciesSlice.ts';
 
 export function RatesPage() {
 
@@ -8,39 +8,42 @@ export function RatesPage() {
 
   const dispatch = useAppDispatch();
 
-  const {
-    // fromCurrency,
-    // toCurrency,
-    currencyRates,
-
-  } = useAppSelector(state => state.currencyRates);
-
-  // const onChangeFromAmount = (fromAmount: number) => {
-  //   const amount = fromAmount / currencyRates[fromCurrency];
-  //   const result = amount * currencyRates[toCurrency];
-  //   setToAmount(result);
-  //   setFromAmount(fromAmount);
-  // };
+  const {currencyRates, currencies, base, fromCurrency} = useAppSelector(state => state.currencyRates);
 
   useEffect(() => {
     dispatch(fetchAllCurrencyRates());
   }, [dispatch]);
 
-  const { currencies } = useAppSelector(state => state.currencyRates);
-  console.log('currencyRates', currencyRates);
 
+  useEffect(() => {
+
+    const baseCurrencyRate = currencyRates[base] / currencyRates[fromCurrency];
+    console.log('baseCurrencyRate', baseCurrencyRate);
+
+    const result = (baseCurrencyRate * fromAmount) * currencyRates[currencies[1]];
+    console.log('result', result)
+
+    // setToAmount(result);
+    dispatch(changeFromCurrency(fromCurrency));
+    // dispatch(changeToCurrency(toCurrency));
+
+  }, [base, currencies, currencyRates, dispatch, fromAmount, fromCurrency]);
+
+  const handleFromCurrencyChange = (newCurrency: string) => {
+    dispatch(changeFromCurrency(newCurrency));
+  };
 
   return (
-    <div style={{ overflowY: 'auto', maxHeight: 500, width: 500 }}>
-      <h2>Rates Page</h2>
+    <div style={{overflowY: 'auto', maxHeight: 500, width: 500}}>
       <div>
         <input type="number"
           min="0"
           value={fromAmount.toString()}
-          onChange={({ target }) => setFromAmount(parseInt(target.value, 10))}
+          onChange={({target}) => setFromAmount(+target.value)}
         />
         <select
-          // value={selectedCurrency} onChange={onChangeCurrency}
+          value={fromCurrency}
+          onChange={({target}) => handleFromCurrencyChange(target.value)}
         >
           {currencies.map((currency, id) =>
             <option key={id} value={currency}>
@@ -51,9 +54,9 @@ export function RatesPage() {
       </div>
 
       {Object.entries(currencyRates).map(([currencyCode, rate]) => (
-        <div style={{ display: 'flex', paddingRight: 50 }} key={currencyCode}>
-          <div>{currencyCode} --</div>
-          <div> {rate.toFixed(3)}</div>
+        <div style={{display: 'flex'}} key={currencyCode}>
+          <div>{currencyCode} -</div>
+          <div> {(fromAmount * Number(rate)).toFixed(2)}</div>
         </div>
       ))
       }

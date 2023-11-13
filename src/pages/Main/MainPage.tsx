@@ -78,8 +78,8 @@ export function MainPage() {
         : isLoading === 'resolved'
           ? (
             <div className={styles.card}>
-              <h5>{fromAmount} {fromCurrency} is equivalent to</h5>
-              <h2>{toAmount} {toCurrency}</h2>
+              <h5>{fromAmount.toFixed(2)} {fromCurrency} is equivalent to</h5>
+              <h2>{toAmount.toFixed(2)} {toCurrency}</h2>
               <p>as of {date}</p>
 
               <div className={styles.currencyRow}>
@@ -87,7 +87,7 @@ export function MainPage() {
                   selectedCurrency={fromCurrency}
                   amount={fromAmount}
                   onChangeCurrency={({ target }) => handleFromCurrencyChange(target.value)}
-                  onAmountChange={(e) => onChangeFromAmount(+(e.target.value))}
+                  onAmountChange={({ target }) => onChangeFromAmount(+target.value)}
                 />
                 <div className={styles.currencySwitch} onClick={handleSwitchCurrency}>
                   <SwitchCurrency />
@@ -96,7 +96,7 @@ export function MainPage() {
                   selectedCurrency={toCurrency}
                   amount={toAmount}
                   onChangeCurrency={({ target }) => handleToCurrencyChange(target.value)}
-                  onAmountChange={(e) => onChangeToAmount(+(e.target.value))}
+                  onAmountChange={({ target }) => onChangeToAmount(+target.value)}
                 />
               </div>
             </div>
