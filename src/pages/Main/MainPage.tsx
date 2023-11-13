@@ -1,22 +1,50 @@
 import styles from './MainPage.module.scss';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
-import { changeFromCurrency, changeToCurrency, fetchAllCurrencyRates } from 'store/slices/CurrenciesSlice.ts';
+import {
+  changeFromCurrency,
+  changeToCurrency,
+  fetchAllCurrencyRates,
+  switchCurrency,
+} from 'store/slices/CurrenciesSlice.ts';
 import { CurrencyRow } from 'components/CurrencyRow/CurrencyRow.tsx';
 import { HiOutlineSwitchVertical as SwitchCurrency } from 'react-icons/hi';
 
 
 export function MainPage() {
 
-  const [fromAmount, setFromAmount] = useState(0);
+  const [fromAmount, setFromAmount] = useState(1);
   const [toAmount, setToAmount] = useState(0);
-  const { error, isLoading, date, fromCurrency, toCurrency, currencyRates } = useAppSelector(state => state.currencyRates);
+
+  const {
+    error,
+    isLoading,
+    date,
+    fromCurrency,
+    toCurrency,
+    currencyRates,
+    currencies,
+  } = useAppSelector(state => state.currencyRates);
 
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(fetchAllCurrencyRates());
   }, [dispatch]);
+
+
+  useEffect(() => {
+
+    const baseCurrencyRate = currencyRates[currencies[0]] / currencyRates[fromCurrency];
+
+    const result = (baseCurrencyRate * fromAmount) * currencyRates[toCurrency];
+
+    setToAmount(result);
+    dispatch(changeFromCurrency(fromCurrency));
+    dispatch(changeToCurrency(toCurrency));
+
+  }, [currencies, currencyRates, dispatch, fromAmount, fromCurrency, toCurrency]);
+
 
   const handleFromCurrencyChange = (newCurrency: string) => {
     dispatch(changeFromCurrency(newCurrency));
@@ -26,15 +54,20 @@ export function MainPage() {
     dispatch(changeToCurrency(newCurrency));
   };
 
-  const onChangeFromAmount = (value: number) => {
-    const amount = value / currencyRates[fromCurrency];
+  const onChangeFromAmount = (fromAmount: number) => {
+    const amount = fromAmount / currencyRates[fromCurrency];
     const result = amount * currencyRates[toCurrency];
     setToAmount(result);
-    setFromAmount(value);
+    setFromAmount(fromAmount);
   };
 
-  const onChangeToAmount = (value: number) => {
-    setToAmount(value);
+  const onChangeToAmount = (toAmount: number) => {
+    setFromAmount(toAmount * currencyRates[fromCurrency] / currencyRates[toCurrency]);
+    setToAmount(toAmount);
+  };
+
+  const handleSwitchCurrency = () => {
+    dispatch(switchCurrency());
   };
 
   return (
@@ -45,25 +78,25 @@ export function MainPage() {
         : isLoading === 'resolved'
           ? (
             <div className={styles.card}>
-              <h5>1 {fromCurrency} is equivalent to</h5>
-              <h2>1.87 {toCurrency}</h2>
+              <h5>{fromAmount} {fromCurrency} is equivalent to</h5>
+              <h2>{toAmount} {toCurrency}</h2>
               <p>as of {date}</p>
 
               <div className={styles.currencyRow}>
                 <CurrencyRow
                   selectedCurrency={fromCurrency}
-                  value={fromAmount}
+                  amount={fromAmount}
                   onChangeCurrency={({ target }) => handleFromCurrencyChange(target.value)}
-                  onChangeValue={(e) => onChangeFromAmount(Number(e.target.value))}
+                  onAmountChange={(e) => onChangeFromAmount(+(e.target.value))}
                 />
-                <div className={styles.currencySwitch}>
+                <div className={styles.currencySwitch} onClick={handleSwitchCurrency}>
                   <SwitchCurrency />
                 </div>
                 <CurrencyRow
                   selectedCurrency={toCurrency}
-                  value={toAmount}
+                  amount={toAmount}
                   onChangeCurrency={({ target }) => handleToCurrencyChange(target.value)}
-                  onChangeValue={(e) => onChangeToAmount(Number(e.target.value))}
+                  onAmountChange={(e) => onChangeToAmount(+(e.target.value))}
                 />
               </div>
             </div>
