@@ -1,3 +1,12 @@
-.mainPage {
-  color: var(--error-color);
+.currencyRow {
+  background: #fdfdfd;
+  padding: 6em 3em;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+}
+
+.currencySwitch svg {
+  stroke: chocolate;
+  font-size: 36px;
+  cursor: pointer;
 }

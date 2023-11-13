@@ -1,6 +1,6 @@
 export interface IExchangeRateResponse {
-  success: boolean;
-  timestamp: number;
+  success?: boolean;
+  timestamp?: number;
   base: string;
   date: string;
   rates: ICurrencyRates;
