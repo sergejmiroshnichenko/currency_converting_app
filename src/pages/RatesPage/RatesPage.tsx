@@ -9,8 +9,8 @@ export function RatesPage() {
   const dispatch = useAppDispatch();
 
   const {
-    fromCurrency,
-    toCurrency,
+    // fromCurrency,
+    // toCurrency,
     currencyRates,
 
   } = useAppSelector(state => state.currencyRates);
