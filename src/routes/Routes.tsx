@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
-import { MainPage } from 'pages/Main/MainPage.tsx';
+import { MainPage } from 'pages/MainPage/MainPage.tsx';
 import { RatesPage } from 'pages/RatesPage/RatesPage.tsx';
-import { RandomPage } from 'pages/RandomPage/RandomPage.tsx';
+import { AboutPage } from 'pages/AboutPage/AboutPage.tsx';
 
 
 export function AppRoutes() {
@@ -14,7 +14,7 @@ export function AppRoutes() {
         element={<RatesPage />}
       />
       <Route path="/about"
-        element={<RandomPage />}
+        element={<AboutPage />}
       />
     </Routes>
   );

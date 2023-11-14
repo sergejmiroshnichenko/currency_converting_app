@@ -1,0 +1,18 @@
+.footer {
+  //position: absolute;
+  //bottom: 0;
+  //width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer a {
+  font-size: 28px;
+}
+
+//@media (min-width: 320px) and (max-width: 768px) {
+//  .footer {
+//    bottom: -60px;
+//  }
+//}

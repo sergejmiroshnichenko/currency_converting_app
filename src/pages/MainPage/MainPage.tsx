@@ -1,5 +1,5 @@
 import styles from './MainPage.module.scss';
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
 import {
   changeFromCurrency,
@@ -9,9 +9,11 @@ import {
 } from 'store/slices/CurrenciesSlice.ts';
 import { CurrencyRow } from 'components/CurrencyRow/CurrencyRow.tsx';
 import { HiOutlineSwitchVertical as SwitchCurrency } from 'react-icons/hi';
+import { Layout } from 'components/Layout/Layout.tsx';
+import { Loader } from 'components/Loader/Loader.tsx';
 
 
-export function MainPage() {
+export const MainPage: FC = () => {
 
   const [fromAmount, setFromAmount] = useState(1);
   const [toAmount, setToAmount] = useState(0);
@@ -35,9 +37,9 @@ export function MainPage() {
 
   useEffect(() => {
 
-    const baseCurrencyRate = currencyRates[currencies[0]] / currencyRates[fromCurrency];
-
-    const result = (baseCurrencyRate * fromAmount) * currencyRates[toCurrency];
+    const baseCrossRate = currencyRates[currencies[0]] / currencyRates[fromCurrency];
+    
+    const result = (baseCrossRate * fromAmount) * currencyRates[toCurrency];
 
     setToAmount(result);
     dispatch(changeFromCurrency(fromCurrency));
@@ -71,7 +73,7 @@ export function MainPage() {
   };
 
   return (
-    <section>
+    <Layout className={styles.wrapper}>
       {error ?
         <h1>Error occurred : {error}</h1>
 
@@ -101,8 +103,8 @@ export function MainPage() {
               </div>
             </div>
           )
-          : <h2>Loading...</h2>
+          : <Loader />
       }
-    </section>
+    </Layout>
   );
-}
+};

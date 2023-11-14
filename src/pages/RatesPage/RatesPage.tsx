@@ -1,65 +1,79 @@
-import {useAppDispatch, useAppSelector} from 'hooks/redux-hooks.ts';
-import {useEffect, useState} from 'react';
-import {changeFromCurrency, fetchAllCurrencyRates} from 'store/slices/CurrenciesSlice.ts';
+import styles from './RatesPage.module.scss';
+import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
+import { FC, useEffect, useState } from 'react';
+import { changeFromCurrency, fetchAllCurrencyRates } from 'store/slices/CurrenciesSlice.ts';
+import { Layout } from 'components/Layout/Layout.tsx';
+import { Loader } from 'components/Loader/Loader.tsx';
 
-export function RatesPage() {
+export const RatesPage: FC = () => {
 
   const [fromAmount, setFromAmount] = useState(1);
 
-  const dispatch = useAppDispatch();
+  const [convertedValues, setConvertedValues] = useState<Record<string, number>>({});
 
-  const {currencyRates, currencies, base, fromCurrency} = useAppSelector(state => state.currencyRates);
+  const { currencyRates, currencies, fromCurrency, error, isLoading } = useAppSelector(state => state.currencyRates);
+
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(fetchAllCurrencyRates());
   }, [dispatch]);
 
-
   useEffect(() => {
+    const baseCrossRate = currencyRates[currencies[0]] / currencyRates[fromCurrency];
+    const updatedConvertedValues: Record<string, number> = {};
 
-    const baseCurrencyRate = currencyRates[base] / currencyRates[fromCurrency];
-    console.log('baseCurrencyRate', baseCurrencyRate);
+    for (const [currencyCode, rate] of Object.entries(currencyRates)) {
+      updatedConvertedValues[currencyCode] = (baseCrossRate * fromAmount) * rate;
+    }
 
-    const result = (baseCurrencyRate * fromAmount) * currencyRates[currencies[1]];
-    console.log('result', result)
-
-    // setToAmount(result);
+    setConvertedValues(updatedConvertedValues);
     dispatch(changeFromCurrency(fromCurrency));
-    // dispatch(changeToCurrency(toCurrency));
-
-  }, [base, currencies, currencyRates, dispatch, fromAmount, fromCurrency]);
+  }, [currencies, currencyRates, dispatch, fromAmount, fromCurrency]);
 
   const handleFromCurrencyChange = (newCurrency: string) => {
     dispatch(changeFromCurrency(newCurrency));
   };
 
   return (
-    <div style={{overflowY: 'auto', maxHeight: 500, width: 500}}>
-      <div>
-        <input type="number"
-          min="0"
-          value={fromAmount.toString()}
-          onChange={({target}) => setFromAmount(+target.value)}
-        />
-        <select
-          value={fromCurrency}
-          onChange={({target}) => handleFromCurrencyChange(target.value)}
-        >
-          {currencies.map((currency, id) =>
-            <option key={id} value={currency}>
-              {currency}
-            </option>,
-          )}
-        </select>
-      </div>
+    <Layout className={styles.wrapper}>
+      {error ?
+        <h1>Error occurred : {error}</h1>
 
-      {Object.entries(currencyRates).map(([currencyCode, rate]) => (
-        <div style={{display: 'flex'}} key={currencyCode}>
-          <div>{currencyCode} -</div>
-          <div> {(fromAmount * Number(rate)).toFixed(2)}</div>
-        </div>
-      ))
+        : isLoading === 'resolved'
+          ? (
+            <div style={{ overflowY: 'auto', maxHeight: 500, width: 500 }}>
+              <div>
+                <input type="number"
+                  min="0"
+                  value={fromAmount.toString()}
+                  onChange={({ target }) => setFromAmount(+target.value)}
+                />
+                <select
+                  value={fromCurrency}
+                  onChange={({ target }) => handleFromCurrencyChange(target.value)}
+                >
+                  {currencies.map((currency, id) =>
+                    <option key={id} value={currency}>
+                      {currency}
+                    </option>,
+                  )}
+                </select>
+              </div>
+
+              {Object.entries(convertedValues).map(([currencyCode, rate]) => {
+                return (
+                  <div style={{ display: 'flex' }} key={currencyCode}>
+                    <div>{currencyCode} -</div>
+                    <div> {(fromAmount * rate).toFixed(2)}</div>
+                  </div>
+                );
+              })
+              }
+            </div>
+          )
+          : <Loader />
       }
-    </div>
+    </Layout>
   );
-}
+};
