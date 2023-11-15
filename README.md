@@ -15,9 +15,9 @@ Run the following commands:
 The project uses the following main libraries and frameworks:
 
 - **react** (ver. 18.2.0) и **react-dom** (ver. 18.2.0): Basic libraries for creating UI.
-- **typescript** (версия "^5.0.2"): Provides static typing for JavaScript. It is used to increase the reliability of development and the ability to detect run-time errors.
+- **typescript** (ver. ^5.0.2"): Provides static typing for JavaScript. It is used to increase the reliability of development and the ability to detect run-time errors.
 - **@reduxjs/toolkit** (ver. 1.9.7): Used to manage the global state of the application.
-- **react-router-dom** (версия 6.18.0): Library for implementing routing.
+- **react-router-dom** (ver. 6.18.0): Library for implementing routing.
 - **axios** (ver. 1.6.1): Library for executing HTTP requests, used to interact with the API.
-- **sass** (версия 1.69.5): A CSS preprocessor that allows you to use variables, nesting, and other handy features when writing styles.
+- **sass** (ver. 1.69.5): A CSS preprocessor that allows you to use variables, nesting, and other handy features when writing styles.
 - **react-icons** (ver. 4.11.0): Provides components for a variety of icons.
