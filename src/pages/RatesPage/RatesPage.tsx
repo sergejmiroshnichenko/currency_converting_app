@@ -48,7 +48,7 @@ export function RatesPage() {
   return (
     <Layout className={styles.wrapper}>
       {error ?
-        <h1>Error occurred : {error}</h1>
+        <h2 className={styles.errorMessage}>Error occurred : {error}</h2>
 
         : isLoading === 'resolved'
           ? (

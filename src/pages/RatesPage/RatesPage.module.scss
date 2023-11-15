@@ -3,6 +3,10 @@
   flex-direction: column;
   min-height: 100%;
 
+  .errorMessage {
+    color: var(--error-color);
+  }
+
   .currencyInputContainer {
     margin-bottom: 25px;
   }

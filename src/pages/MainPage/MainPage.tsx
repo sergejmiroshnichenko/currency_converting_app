@@ -78,11 +78,11 @@ export function MainPage() {
   return (
     <Layout className={styles.wrapper}>
       {error ?
-        <h1>Error occurred : {error}</h1>
+        <h2 className={styles.errorMessage}>Error occurred : {error}</h2>
 
         : isLoading === 'resolved'
           ? (
-            <div className={styles.card}>
+            <>
               <h5>{fromAmount.toFixed(2)} {fromCurrency} is equivalent to</h5>
               <h2>{toAmount.toFixed(2)} {toCurrency}</h2>
               <p>as of {date}</p>
@@ -104,7 +104,7 @@ export function MainPage() {
                   onAmountChange={({ target }) => onChangeToAmount(+target.value)}
                 />
               </div>
-            </div>
+            </>
           )
           : <Loader />
       }

@@ -14,7 +14,6 @@ export const Header: FC<HeaderProps> = () => {
         <ul className={styles.list}>
 
           {pageData.map(({ href, label, src, alt }) => (
-
             <li key={href} className={styles.listItem}>
               <NavLink to={href} className={({ isActive }) =>
                 isActive ? styles.active : ''

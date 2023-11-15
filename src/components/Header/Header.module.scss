@@ -1,21 +1,25 @@
-.list {
-  display: flex;
-  justify-content: space-around;
-  width: 500px;
-  margin: 10px auto;
-  list-style-type: none;
-  font-size: 32px;
-  padding-left: 0;
-}
+.nav {
+  height: 100px;
 
-ul li a {
-  text-decoration: none;
-  color: white;
-  font-weight: 600;
-}
+  .list {
+    display: flex;
+    justify-content: space-around;
+    width: 500px;
+    margin: 10px auto;
+    list-style-type: none;
+    font-size: 32px;
+    padding-left: 0;
 
-ul li:hover a {
-  color: white;
+    a {
+      text-decoration: none;
+      color: white;
+      font-weight: 600;
+
+      &:hover a {
+        color: white;
+      }
+    }
+  }
 }
 
 .active {
@@ -25,40 +29,13 @@ ul li:hover a {
   cursor: default;
 }
 
-//.cartNumber {
-//  width: 21px;
-//  height: 21px;
-//  margin-right: 14px;
-//}
-//
-//.starNumber {
-//  width: 21px;
-//  height: 21px;
-//  margin-right: 15px;
-//}
-
-.nav {
-  height: 70px;
-}
 
 @media (min-width: 320px) and (max-width: 480px) {
   .list {
     padding: 0 10px;
-  }
 
-  .listItem {
-    font-size: 26px;
+    .listItem {
+      font-size: 26px;
+    }
   }
-
-  //.cartNumber {
-  //  width: 19px;
-  //  height: 19px;
-  //  margin-right: 10px;
-  //}
-  //
-  //.starNumber {
-  //  width: 19px;
-  //  height: 19px;
-  //  margin-right: 10px;
-  //}
 }
