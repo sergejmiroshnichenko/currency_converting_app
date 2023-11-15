@@ -1,29 +1,29 @@
 import styles from './MainPage.module.scss';
-import { FC, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
-import {
-  changeFromCurrency,
-  changeToCurrency,
-  fetchAllCurrencyRates,
-  switchCurrency,
-} from 'store/slices/CurrenciesSlice.ts';
+import { fetchAllCurrencyRates } from 'store/slices/CurrenciesSlice.ts';
 import { CurrencyRow } from 'components/CurrencyRow/CurrencyRow.tsx';
-import { HiOutlineSwitchVertical as SwitchCurrency } from 'react-icons/hi';
+import { GoArrowSwitch as SwitchCurrency } from 'react-icons/go';
 import { Layout } from 'components/Layout/Layout.tsx';
 import { Loader } from 'components/Loader/Loader.tsx';
+import { useSearchQuery } from 'hooks/useSearchQuery.ts';
 
+export function MainPage() {
 
-export const MainPage: FC = () => {
+  const { setQuery, searchParams } = useSearchQuery();
 
-  const [fromAmount, setFromAmount] = useState(1);
+  const from = searchParams.get('from') || 'EUR';
+  const to = searchParams.get('to') || 'AED';
+
+  const [fromAmount, setFromAmount] = useState(Number(searchParams.get('amount')) || 1);
   const [toAmount, setToAmount] = useState(0);
+  const [fromCurrency, setFromCurrency] = useState(from);
+  const [toCurrency, setToCurrency] = useState(to);
 
   const {
     error,
     isLoading,
     date,
-    fromCurrency,
-    toCurrency,
     currencyRates,
     currencies,
   } = useAppSelector(state => state.currencyRates);
@@ -36,27 +36,27 @@ export const MainPage: FC = () => {
 
 
   useEffect(() => {
-
     const baseCrossRate = currencyRates[currencies[0]] / currencyRates[fromCurrency];
-    
+
     const result = (baseCrossRate * fromAmount) * currencyRates[toCurrency];
 
     setToAmount(result);
-    dispatch(changeFromCurrency(fromCurrency));
-    dispatch(changeToCurrency(toCurrency));
-
+    setToCurrency(toCurrency);
+    setFromCurrency(fromCurrency);
   }, [currencies, currencyRates, dispatch, fromAmount, fromCurrency, toCurrency]);
 
-
   const handleFromCurrencyChange = (newCurrency: string) => {
-    dispatch(changeFromCurrency(newCurrency));
+    setFromCurrency(newCurrency);
+    setQuery({ from: newCurrency });
   };
 
   const handleToCurrencyChange = (newCurrency: string) => {
-    dispatch(changeToCurrency(newCurrency));
+    setToCurrency(newCurrency);
+    setQuery({ to: newCurrency });
   };
 
   const onChangeFromAmount = (fromAmount: number) => {
+    setQuery({ amount: fromAmount.toString() });
     const amount = fromAmount / currencyRates[fromCurrency];
     const result = amount * currencyRates[toCurrency];
     setToAmount(result);
@@ -69,7 +69,10 @@ export const MainPage: FC = () => {
   };
 
   const handleSwitchCurrency = () => {
-    dispatch(switchCurrency());
+    const tempCurrency = fromCurrency;
+    setFromCurrency(toCurrency);
+    setToCurrency(tempCurrency);
+    setQuery({ to: tempCurrency, from: toCurrency });
   };
 
   return (
@@ -107,4 +110,4 @@ export const MainPage: FC = () => {
       }
     </Layout>
   );
-};
+}

@@ -3,7 +3,6 @@ import { MainPage } from 'pages/MainPage/MainPage.tsx';
 import { RatesPage } from 'pages/RatesPage/RatesPage.tsx';
 import { AboutPage } from 'pages/AboutPage/AboutPage.tsx';
 
-
 export function AppRoutes() {
   return (
     <Routes>
