@@ -17,8 +17,6 @@ export function MainPage() {
 
   const [fromAmount, setFromAmount] = useState(Number(searchParams.get('amount')) || 1);
   const [toAmount, setToAmount] = useState(0);
-  const [fromCurrency, setFromCurrency] = useState(from);
-  const [toCurrency, setToCurrency] = useState(to);
 
   const {
     error,
@@ -36,43 +34,36 @@ export function MainPage() {
 
 
   useEffect(() => {
-    const baseCrossRate = currencyRates[currencies[0]] / currencyRates[fromCurrency];
+    const baseCrossRate = currencyRates[currencies[0]] / currencyRates[from];
 
-    const result = (baseCrossRate * fromAmount) * currencyRates[toCurrency];
+    const result = (baseCrossRate * fromAmount) * currencyRates[to];
 
     setToAmount(result);
-    setToCurrency(toCurrency);
-    setFromCurrency(fromCurrency);
-  }, [currencies, currencyRates, dispatch, fromAmount, fromCurrency, toCurrency]);
+  }, [currencies, currencyRates, dispatch, fromAmount, from, to]);
 
   const handleFromCurrencyChange = (newCurrency: string) => {
-    setFromCurrency(newCurrency);
     setQuery({ from: newCurrency });
   };
 
   const handleToCurrencyChange = (newCurrency: string) => {
-    setToCurrency(newCurrency);
     setQuery({ to: newCurrency });
   };
 
   const onChangeFromAmount = (fromAmount: number) => {
     setQuery({ amount: fromAmount.toString() });
-    const amount = fromAmount / currencyRates[fromCurrency];
-    const result = amount * currencyRates[toCurrency];
+    const amount = fromAmount / currencyRates[from];
+    const result = amount * currencyRates[to];
     setToAmount(result);
     setFromAmount(fromAmount);
   };
 
   const onChangeToAmount = (toAmount: number) => {
-    setFromAmount(toAmount * currencyRates[fromCurrency] / currencyRates[toCurrency]);
+    setFromAmount(toAmount * currencyRates[from] / currencyRates[to]);
     setToAmount(toAmount);
   };
 
   const handleSwitchCurrency = () => {
-    const tempCurrency = fromCurrency;
-    setFromCurrency(toCurrency);
-    setToCurrency(tempCurrency);
-    setQuery({ to: tempCurrency, from: toCurrency });
+    setQuery({ to: from, from: to });
   };
 
   return (
@@ -83,13 +74,13 @@ export function MainPage() {
         : isLoading === 'resolved'
           ? (
             <>
-              <h5>{fromAmount.toFixed(2)} {fromCurrency} is equivalent to</h5>
-              <h2>{toAmount.toFixed(2)} {toCurrency}</h2>
+              <h5>{fromAmount.toFixed(2)} {from} is equivalent to</h5>
+              <h2>{toAmount.toFixed(2)} {to}</h2>
               <p>as of {date}</p>
 
               <div className={styles.currencyRow}>
                 <CurrencyRow
-                  selectedCurrency={fromCurrency}
+                  selectedCurrency={from}
                   amount={fromAmount}
                   onChangeCurrency={({ target }) => handleFromCurrencyChange(target.value)}
                   onAmountChange={({ target }) => onChangeFromAmount(+target.value)}
@@ -98,7 +89,7 @@ export function MainPage() {
                   <SwitchCurrency />
                 </div>
                 <CurrencyRow
-                  selectedCurrency={toCurrency}
+                  selectedCurrency={to}
                   amount={toAmount}
                   onChangeCurrency={({ target }) => handleToCurrencyChange(target.value)}
                   onAmountChange={({ target }) => onChangeToAmount(+target.value)}

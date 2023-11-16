@@ -6,6 +6,7 @@ export const useSearchQuery = () => {
     setSearchParam({ ...Object.fromEntries(searchParams.entries()), ...data });
   };
 
+  console.log('searchParams', searchParams);
   return {
     setQuery,
     searchParams,

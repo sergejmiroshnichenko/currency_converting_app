@@ -13,9 +13,6 @@ export function RatesPage() {
   const from = searchParams.get('from') || 'EUR';
 
   const [fromAmount, setFromAmount] = useState(Number(searchParams.get('amount')) || 1);
-
-  const [fromCurrency, setFromCurrency] = useState(from);
-
   const [convertedValues, setConvertedValues] = useState<Record<string, number>>({});
 
   const { currencyRates, currencies, error, isLoading } = useAppSelector(state => state.currencyRates);
@@ -27,19 +24,17 @@ export function RatesPage() {
   }, [dispatch]);
 
   useEffect(() => {
-    const baseCrossRate = currencyRates[currencies[0]] / currencyRates[fromCurrency];
+    const baseCrossRate = currencyRates[currencies[0]] / currencyRates[from];
     const updatedConvertedValues: Record<string, number> = {};
 
     for (const [currencyCode, rate] of Object.entries(currencyRates)) {
-      updatedConvertedValues[currencyCode] = (baseCrossRate * fromAmount) * rate;
+      updatedConvertedValues[currencyCode] = baseCrossRate * fromAmount * rate;
     }
 
     setConvertedValues(updatedConvertedValues);
-    setFromCurrency(fromCurrency);
-  }, [currencies, currencyRates, dispatch, fromAmount, fromCurrency]);
+  }, [currencies, currencyRates, dispatch, fromAmount, from]);
 
   const handleFromCurrencyChange = (newCurrency: string) => {
-    setFromCurrency(newCurrency);
     setQuery({ from: newCurrency });
   };
 
@@ -63,7 +58,7 @@ export function RatesPage() {
                   onChange={({ target }) => onChangeFromAmount(+target.value)}
                 />
                 <select
-                  value={fromCurrency}
+                  value={from}
                   onChange={({ target }) => handleFromCurrencyChange(target.value)}
                 >
                   {currencies?.map((currency, id) =>
@@ -78,7 +73,7 @@ export function RatesPage() {
                 {Object.entries(convertedValues).map(([currencyCode, rate]) => (
                   <div className={styles.convertedValue} key={currencyCode}>
                     <p>{currencyCode}</p>
-                    <p> {(fromAmount * rate).toFixed(2)}</p>
+                    <p> {rate.toFixed(2)}</p>
                   </div>
                 ))}
               </div>
