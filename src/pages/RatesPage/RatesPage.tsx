@@ -9,8 +9,11 @@ import { useSearchQuery } from 'hooks/useSearchQuery.ts';
 export function RatesPage() {
 
   const { setQuery, searchParams } = useSearchQuery();
+
   const from = searchParams.get('from') || 'EUR';
+
   const [fromAmount, setFromAmount] = useState(Number(searchParams.get('amount')) || 1);
+
   const [fromCurrency, setFromCurrency] = useState(from);
 
   const [convertedValues, setConvertedValues] = useState<Record<string, number>>({});
